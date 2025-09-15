@@ -1,6 +1,7 @@
 name: Build and Release HellCore Launcher
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "Alpha"
