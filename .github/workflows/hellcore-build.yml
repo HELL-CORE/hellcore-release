@@ -1,7 +1,7 @@
 name: Build and Release HellCore Launcher
 
 on:
-  workflow_dispatch: # Manual trigger
+  workflow_dispatch:
   push:
     tags:
       - "Alpha"
@@ -11,25 +11,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the private repo with a Personal Access Token
       - name: Checkout HellCore Launcher
         uses: actions/checkout@v4
         with:
           repository: hell-core/hellcore-launcher
-          ref: master                  # <- use 'master' branch
+          ref: master
           token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 1
 
-      - name: Setup Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 9.3.0
+          run_install: false
+
+      - name: Restore pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store/v3
+          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
