@@ -60,16 +60,17 @@ jobs:
         env:
           NEXT_PUBLIC_MICROSOFT_CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }}
 
-      - name: Upload Release
+      - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
           tag_name: Alpha
           name: "HellCore Launcher v0.0.1 (Alpha)"
           draft: false
           prerelease: true
-          overwrite_files: true   # 👈 this fixes the "Not Found" error
+          overwrite_files: true
           files: |
-            src-tauri/target/release/bundle/**/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            src-tauri/target/release/bundle/HellCore-${{ github.ref_name }}-amd64.deb
+            src-tauri/target/release/bundle/HellCore-${{ github.ref_name }}-x86_64.rpm
+            src-tauri/target/release/bundle/hellcore-${{ github.ref_name }}.png
+            src-tauri/target/release/bundle/HellCore.desktop
 
