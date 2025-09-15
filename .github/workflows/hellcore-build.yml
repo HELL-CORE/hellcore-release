@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the private repo with a Personal Access Token
       - name: Checkout HellCore Launcher
         uses: actions/checkout@v4
         with:
