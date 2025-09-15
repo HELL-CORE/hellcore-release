@@ -15,8 +15,9 @@ jobs:
       - name: Checkout HellCore Launcher
         uses: actions/checkout@v4
         with:
-          repository: HELL-CORE/hellcore-launcher
-          token: ${{ secrets.PAT_TOKEN }} # Must be set in repo secrets
+          repository: hell-core/hellcore-launcher # Use lowercase and correct owner
+          ref: main                              # Change if your default branch is not 'main'
+          token: ${{ secrets.PAT_TOKEN }}        # Must be set in repo secrets
           fetch-depth: 1
 
       - name: Setup Node.js
