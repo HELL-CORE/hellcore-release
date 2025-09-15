@@ -1,21 +1,22 @@
 name: Build and Release HellCore Launcher
 
 on:
-  workflow_dispatch: # allow manual trigger
+  workflow_dispatch: # Manual trigger
   push:
     tags:
       - "Alpha"
 
 jobs:
-  build:
+  build-alpha:
     runs-on: ubuntu-latest
 
     steps:
+      # 👇 Checkout the private repo with a Personal Access Token
       - name: Checkout HellCore Launcher
         uses: actions/checkout@v4
         with:
           repository: HELL-CORE/hellcore-launcher
-          token: ${{ secrets.PAT_TOKEN }} # <-- Add a Personal Access Token in repo secrets
+          token: ${{ secrets.PAT_TOKEN }} # Must be set in repo secrets
           fetch-depth: 1
 
       - name: Setup Node.js
@@ -43,6 +44,6 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            src-tauri/target/release/bundle/**/* 
+            src-tauri/target/release/bundle/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
