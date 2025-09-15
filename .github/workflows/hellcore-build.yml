@@ -43,6 +43,10 @@ jobs:
 
       - name: Build Tauri app
         run: pnpm tauri build
+        env: 
+          NEXT_PUBLIC_MICROSOFT_CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }} 
+
+
 
       - name: Upload Release
         uses: softprops/action-gh-release@v2
