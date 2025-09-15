@@ -67,7 +67,9 @@ jobs:
           name: "HellCore Launcher v0.0.1 (Alpha)"
           draft: false
           prerelease: true
+          overwrite_files: true   # 👈 this fixes the "Not Found" error
           files: |
             src-tauri/target/release/bundle/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
