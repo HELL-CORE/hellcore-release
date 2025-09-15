@@ -11,13 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 👇 Checkout the private repo with a Personal Access Token
       - name: Checkout HellCore Launcher
         uses: actions/checkout@v4
         with:
-          repository: hell-core/hellcore-launcher # Use lowercase and correct owner
-          ref: main                              # Change if your default branch is not 'main'
-          token: ${{ secrets.PAT_TOKEN }}        # Must be set in repo secrets
+          repository: hell-core/hellcore-launcher
+          ref: master                  # <- use 'master' branch
+          token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 1
 
       - name: Setup Node.js
