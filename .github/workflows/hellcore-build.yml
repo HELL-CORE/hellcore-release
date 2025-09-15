@@ -22,7 +22,7 @@ jobs:
       - name: Add universe repository (if needed)
         run: sudo add-apt-repository universe
 
-      - name: Update and install system dependencies for Tauri (GTK/GLib/WebKit)
+      - name: Update and install system dependencies for Tauri (GTK/GLib/WebKit/libsoup)
         run: |
           sudo apt-get update
           sudo apt-get install -y --fix-missing \
@@ -33,7 +33,8 @@ jobs:
             libssl-dev \
             libdbus-1-dev \
             libgdk-pixbuf2.0-dev \
-            libwebkit2gtk-4.0-dev
+            libwebkit2gtk-4.0-dev \
+            libsoup-3.0-dev
 
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
