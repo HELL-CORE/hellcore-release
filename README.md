@@ -1,4 +1,4 @@
-# hellcore-releas
+# hellcore-release
 
 
 '''MADE BY INDIAN DEVELOPERS'''
