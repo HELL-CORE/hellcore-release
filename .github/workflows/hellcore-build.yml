@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "Alpha"
+      - "v*"   # Trigger workflow when pushing version tags like v0.0.1-alpha
 
 jobs:
-  build-alpha:
+  build-release:
     runs-on: ubuntu-24.04
 
     steps:
@@ -53,7 +53,7 @@ jobs:
             pnpm-${{ runner.os }}-
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build HellCore app
         run: pnpm tauri build
@@ -63,14 +63,13 @@ jobs:
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: Alpha
-          name: "HellCore Launcher v0.0.1 (Alpha)"
+          tag_name: ${{ secrets.FLAME_VERSION }}
+          name: "HellCore Launcher v${{ secrets.FLAME_VERSION }}"
           draft: false
           prerelease: true
           overwrite_files: true
           files: |
-            src-tauri/target/release/bundle/HellCore-${{ github.ref_name }}-amd64.deb
-            src-tauri/target/release/bundle/HellCore-${{ github.ref_name }}-x86_64.rpm
-            src-tauri/target/release/bundle/hellcore-${{ github.ref_name }}.png
-            src-tauri/target/release/bundle/HellCore.desktop
-
+            src-tauri/target/release/bundle/HellCore-${{ github.ref_name }}-amd64.deb#hellcore-launcher-${{ secrets.FLAME_VERSION }}.deb
+            src-tauri/target/release/bundle/HellCore-${{ github.ref_name }}-x86_64.rpm#hellcore-launcher-${{ secrets.FLAME_VERSION }}.rpm
+            src-tauri/target/release/bundle/hellcore#hellcore-launcher-${{ secrets.FLAME_VERSION }}
+            src-tauri/target/release/bundle/HellCore.desktop#hellcore-launcher-${{ secrets.FLAME_VERSION }}.desktop
