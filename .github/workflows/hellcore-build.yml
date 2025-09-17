@@ -8,7 +8,10 @@ on:
 
 jobs:
   build-release:
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, windows-latest]
 
     steps:
       - name: Checkout HellCore Launcher
@@ -19,7 +22,8 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 1
 
-      - name: Update and install system dependencies for Tauri (GTK/GLib/WebKit/libsoup)
+      - name: Install dependencies (Linux only)
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y --fix-missing \
@@ -63,13 +67,15 @@ jobs:
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ secrets.FLAME_VERSION }}
-          name: "HellCore Launcher v${{ secrets.FLAME_VERSION }}"
+          tag_name: ${{ github.ref_name }}
+          name: "HellCore Launcher ${{ github.ref_name }}"
           draft: false
           prerelease: true
           overwrite_files: true
           files: |
-            src-tauri/target/release/bundle/HellCore-${{ github.ref_name }}-amd64.deb#hellcore-launcher-${{ secrets.FLAME_VERSION }}.deb
-            src-tauri/target/release/bundle/HellCore-${{ github.ref_name }}-x86_64.rpm#hellcore-launcher-${{ secrets.FLAME_VERSION }}.rpm
-            src-tauri/target/release/bundle/hellcore#hellcore-launcher-${{ secrets.FLAME_VERSION }}
-            src-tauri/target/release/bundle/HellCore.desktop#hellcore-launcher-${{ secrets.FLAME_VERSION }}.desktop
+            ${{ runner.os == 'Linux' && 'src-tauri/target/release/bundle/deb/*.deb' || '' }}
+            ${{ runner.os == 'Linux' && 'src-tauri/target/release/bundle/rpm/*.rpm' || '' }}
+            ${{ runner.os == 'Linux' && 'src-tauri/target/release/bundle/hellcore' || '' }}
+            ${{ runner.os == 'Linux' && 'src-tauri/target/release/bundle/HellCore.desktop' || '' }}
+            ${{ runner.os == 'Windows' && 'src-tauri/target/release/bundle/msi/*.msi' || '' }}
+            ${{ runner.os == 'Windows' && 'src-tauri/target/release/bundle/nsis/*.exe' || '' }}
