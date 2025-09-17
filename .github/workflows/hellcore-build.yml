@@ -9,9 +9,14 @@ on:
 jobs:
   build-release:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
     strategy:
       matrix:
         os: [ubuntu-24.04, windows-latest]
+
+    defaults:
+      run:
+        shell: pwsh   # Avoid "Terminate batch job (Y/N)?"
 
     steps:
       - name: Checkout HellCore Launcher
@@ -22,6 +27,7 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 1
 
+      # Linux system dependencies
       - name: Install dependencies (Linux only)
         if: runner.os == 'Linux'
         run: |
@@ -37,17 +43,24 @@ jobs:
             libwebkit2gtk-4.1-dev \
             libsoup-3.0-dev
 
+      # Rust toolchain setup
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      # Node.js setup
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # pnpm setup
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
           version: 9.3.0
           run_install: false
 
+      # pnpm cache
       - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
@@ -56,14 +69,29 @@ jobs:
           restore-keys: |
             pnpm-${{ runner.os }}-
 
+      # Rust cache
+      - name: Restore Rust cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      # Install JS deps
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
+      # Build app
       - name: Build HellCore app
         run: pnpm tauri build
         env:
           NEXT_PUBLIC_MICROSOFT_CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }}
 
+      # Upload release artifacts
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
